@@ -1,81 +1,65 @@
 (function() {
   'use strict';
 
-  // model
-  let lightState = {
+  let model = {
     stopOn: false,
     slowOn: false,
     goOn: false
   };
 
   // controller
+  let controller = {
+    updateLightState: function(clickedLightBtn) {
+      let lightOn = clickedLightBtn.innerHTML.toLowerCase().concat('On');
+      for (var key in model) {
+        if (key === lightOn) {
+          model[key] = !model[key];
+        } else {
+          model[key] = false;
+        }
+      }
+    },
 
-  function updateLightState(light) {
-    let lightOn = light.toLowerCase().concat('On');
-
-    for (var key in lightState) {
-      if (key === lightOn) {
-        lightState[key] = !lightState[key];
+    activateLights: function(bulbs) {
+      if (model.stopOn) {
+        bulbs[0].classList.add('stop');
+        bulbs[1].classList.remove('slow');
+        bulbs[2].classList.remove('go');
+      } else if (model.slowOn) {
+        bulbs[0].classList.remove('stop');
+        bulbs[1].classList.add('slow');
+        bulbs[2].classList.remove('go');
+      } else if (model.goOn) {
+        bulbs[0].classList.remove('stop');
+        bulbs[1].classList.remove('slow');
+        bulbs[2].classList.add('go');
       } else {
-        lightState[key] = false;
+        bulbs[0].classList.remove('stop');
+        bulbs[1].classList.remove('slow');
+        bulbs[2].classList.remove('go');
       }
     }
-    console.log(lightState);
-    // based on model, add or remove classes to view
   }
 
-  function activateLights(bulbs) {
-    if (lightState.stopOn) {
-      // console.log(bulbs[0].id);
-      bulbs[0].classList.add('stop');
-      bulbs[1].classList.remove('slow');
-      bulbs[2].classList.remove('go');
-    } else if (lightState.slowOn) {
-      bulbs[0].classList.remove('stop');
-      bulbs[1].classList.add('slow');
-      bulbs[2].classList.remove('go');
-    } else if (lightState.goOn) {
-      bulbs[0].classList.remove('stop');
-      bulbs[1].classList.remove('slow');
-      bulbs[2].classList.add('go');
+  function outputChange (light) {
+    if (light.classList.contains('stop')) {
+      console.log(`${light.innerText} bulb on`);
     } else {
-      bulbs[0].classList.remove('stop');
-      bulbs[1].classList.remove('slow');
-      bulbs[2].classList.remove('go');
+      console.log(`${light.innerText} bulb off`);
     }
-
   }
-
-  // function createToggle(btn, lightType, action) {
-  //   let speedBtn = document.getElementById(btn);
-  //
-  //   speedBtn.addEventListener('click', function(){
-  //     document.getElementById(lightType).classList.toggle(action);
-  //   });
-  //
-  //   speedBtn.addEventListener('mouseenter', function(){
-  //     console.log(`Entered ${this.textContent} button`);
-  //   });
-  //
-  //   speedBtn.addEventListener('mouseleave', function(){
-  //     console.log(`Left ${this.textContent} button`);
-  //   });
-  // }
-  //
-  // createToggle('stopButton', 'stopLight', 'stop');
-  // createToggle('slowButton', 'slowLight', 'slow');
-  // createToggle('goButton', 'goLight', 'go');
 
 
   // view
   document.getElementById('controls').addEventListener('click', function(e){
-    let target = e.target;
+    let targetBtn = e.target;
 
-    updateLightState(target.innerHTML);
+    controller.updateLightState(targetBtn);
 
-    let bulbs = document.getElementsByClassName('bulb');
-    activateLights(bulbs);
+    controller.activateLights(document.getElementsByClassName('bulb'));
 
-    console.log(`${target.innerText} bulb on`)
+    // outputChange(target);
+
+    // console.log(`${target.innerText} bulb on`);
   });
 })();
