@@ -1,9 +1,19 @@
 (function() {
   'use strict';
 
-  function createToggle(btn, light, action) {
-    document.getElementById(btn).addEventListener('click', function(){
-      document.getElementById(light).classList.toggle(action);
+  function createToggle(btn, lightType, action) {
+    let speedBtn = document.getElementById(btn);
+
+    speedBtn.addEventListener('click', function(){
+      document.getElementById(lightType).classList.toggle(action);
+    });
+
+    speedBtn.addEventListener('mouseenter', function(){
+      console.log(`Entered ${this.textContent} button`);
+    });
+
+    speedBtn.addEventListener('mouseleave', function(){
+      console.log(`Left ${this.textContent} button`);
     });
   }
 
