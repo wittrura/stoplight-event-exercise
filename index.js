@@ -37,23 +37,6 @@
           bulbs[i].classList.remove(lightType);
         }
       }
-      // if (model.stopOn) {
-      //   bulbs[0].classList.add('stop');
-      //   bulbs[1].classList.remove('slow');
-      //   bulbs[2].classList.remove('go');
-      // } else if (model.slowOn) {
-      //   bulbs[0].classList.remove('stop');
-      //   bulbs[1].classList.add('slow');
-      //   bulbs[2].classList.remove('go');
-      // } else if (model.goOn) {
-      //   bulbs[0].classList.remove('stop');
-      //   bulbs[1].classList.remove('slow');
-      //   bulbs[2].classList.add('go');
-      // } else {
-      //   bulbs[0].classList.remove('stop');
-      //   bulbs[1].classList.remove('slow');
-      //   bulbs[2].classList.remove('go');
-      // }
     },
     init: function() {
       view.init();
@@ -72,6 +55,18 @@
   // view
   let view = {
     init: function() {
+      //
+      let controlButtons = document.getElementById('controls').getElementsByClassName('button');
+      for (var i = 0; i < controlButtons.length; i++) {
+        controlButtons[i].addEventListener('mouseenter', function(e) {
+          console.log(`Entered ${e.target.textContent} button`);
+        });
+
+        controlButtons[i].addEventListener('mouseleave', function(e) {
+          console.log(`Left ${e.target.textContent} button`);
+        });
+      }
+
       //
       document.getElementById('controls').addEventListener('click', function(e){
         let targetBtn = e.target;
