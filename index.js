@@ -1,9 +1,6 @@
 (function() {
   'use strict';
 
-  // creates custom event to be dispatched whenever there are changes to the model
-  // let updateModelEvent = new Event('updateModel');
-
   // model
   let model = {
     stopOn: false,
@@ -14,12 +11,19 @@
   // controller
   let controller = {
     updateLightState: function(lightOn) {
-      // ex input: stopOn, slowOn, goOn
-      //
+      // ex input: 'stopOn', 'slowOn', 'goOn'
+      // loops through model to check for the light which was passed in
+      // if that light is not on, turn it on OR if it IS on, turn it off
+      // for all other lights, set to false
+      let toggledOff = '';
       for (var key in model) {
         if (key === lightOn) {
           model[key] = !model[key];
         } else {
+          // save a different light if it was already on and then turned off
+          if (model[key]) {
+            toggledOff = key;
+          }
           model[key] = false;
         }
       }
@@ -28,11 +32,13 @@
         detail: {
           changed: lightOn,
           status: model[lightOn],
+          toggledOff: toggledOff
         }
       });
       document.getElementById('traffic-light').dispatchEvent(updateModelEvent);
     },
 
+    // turns lights on based on model state
     activateLights: function(bulbs) {
       for (var i = 0; i < bulbs.length; i++) {
         let lightType = bulbs[i].id.replace(/Light/,'');
@@ -55,6 +61,13 @@
         lightStatus = 'off';
       }
 
+      // if a DIFFERENT bulb was turned off, log that
+      if (eventDetail.toggledOff) {
+        let toggledOff = eventDetail.toggledOff.replace(/On/,'');
+        console.log(`${toggledOff} bulb off`);
+      }
+
+      // log the state of the bulb for which a button was clicked
       console.log(`${lightType} bulb ${lightStatus}`);
     },
 
