@@ -1,6 +1,10 @@
 (function() {
   'use strict';
 
+  //
+  let updateModelEvent = new Event('updateModel');
+
+  //
   let model = {
     stopOn: false,
     slowOn: false,
@@ -9,8 +13,9 @@
 
   // controller
   let controller = {
-    updateLightState: function(clickedLightBtn) {
-      let lightOn = clickedLightBtn.innerHTML.toLowerCase().concat('On');
+    updateLightState: function(lightOn) {
+      // ex input: stopOn, slowOn, goOn
+      //
       for (var key in model) {
         if (key === lightOn) {
           model[key] = !model[key];
@@ -18,29 +23,44 @@
           model[key] = false;
         }
       }
+      //
+      document.getElementById('traffic-light').dispatchEvent(updateModelEvent);
     },
 
     activateLights: function(bulbs) {
-      if (model.stopOn) {
-        bulbs[0].classList.add('stop');
-        bulbs[1].classList.remove('slow');
-        bulbs[2].classList.remove('go');
-      } else if (model.slowOn) {
-        bulbs[0].classList.remove('stop');
-        bulbs[1].classList.add('slow');
-        bulbs[2].classList.remove('go');
-      } else if (model.goOn) {
-        bulbs[0].classList.remove('stop');
-        bulbs[1].classList.remove('slow');
-        bulbs[2].classList.add('go');
-      } else {
-        bulbs[0].classList.remove('stop');
-        bulbs[1].classList.remove('slow');
-        bulbs[2].classList.remove('go');
+      for (var i = 0; i < bulbs.length; i++) {
+        let lightType = bulbs[i].id.replace(/Light/,'');
+        // console.log(lightType);
+        if (model[lightType.concat('On')]) {
+          bulbs[i].classList.add(lightType);
+        } else {
+          bulbs[i].classList.remove(lightType);
+        }
       }
+      // if (model.stopOn) {
+      //   bulbs[0].classList.add('stop');
+      //   bulbs[1].classList.remove('slow');
+      //   bulbs[2].classList.remove('go');
+      // } else if (model.slowOn) {
+      //   bulbs[0].classList.remove('stop');
+      //   bulbs[1].classList.add('slow');
+      //   bulbs[2].classList.remove('go');
+      // } else if (model.goOn) {
+      //   bulbs[0].classList.remove('stop');
+      //   bulbs[1].classList.remove('slow');
+      //   bulbs[2].classList.add('go');
+      // } else {
+      //   bulbs[0].classList.remove('stop');
+      //   bulbs[1].classList.remove('slow');
+      //   bulbs[2].classList.remove('go');
+      // }
+    },
+    init: function() {
+      view.init();
     }
   }
 
+  // TODO
   function outputChange (light) {
     if (light.classList.contains('stop')) {
       console.log(`${light.innerText} bulb on`);
@@ -49,17 +69,22 @@
     }
   }
 
-
   // view
-  document.getElementById('controls').addEventListener('click', function(e){
-    let targetBtn = e.target;
+  let view = {
+    init: function() {
+      //
+      document.getElementById('controls').addEventListener('click', function(e){
+        let targetBtn = e.target;
 
-    controller.updateLightState(targetBtn);
+        controller.updateLightState(targetBtn.innerHTML.toLowerCase().concat('On'));
+      });
 
-    controller.activateLights(document.getElementsByClassName('bulb'));
+      //
+      document.getElementById('traffic-light').addEventListener('updateModel', function(e) {
+        controller.activateLights(document.getElementsByClassName('bulb'));
+      });
+    }
+  };
 
-    // outputChange(target);
-
-    // console.log(`${target.innerText} bulb on`);
-  });
+  controller.init();
 })();
