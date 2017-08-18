@@ -8,6 +8,10 @@
     goOn: false
   };
 
+  let config = {
+    container: document.getElementByClass('controls'),
+  }
+
   // controller
   let controller = {
     updateLightState: function(lightOn) {
@@ -78,9 +82,18 @@
 
   // view
   let view = {
-    init: function() {
+    getButtons: function(container){
+        return {
+          redLight: container.getElementsByClassName('button'),
+          redLight: container.getElementsByClassName('button'),
+          redLight: container.getElementsByClassName('button'),
+        }
+    },
+    init: function(container) {
       // adds listeners for when mouse enters or leaves a control button by looping
       // through all the elements with button class within the controls div
+      let myButtons = getButtons(container)
+
       let controlButtons = document.getElementById('controls').getElementsByClassName('button');
       for (var i = 0; i < controlButtons.length; i++) {
         controlButtons[i].addEventListener('mouseenter', function(e) {
@@ -110,5 +123,5 @@
     }
   };
 
-  controller.init();
+  controller.init(config);
 })();
